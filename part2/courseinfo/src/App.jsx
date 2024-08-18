@@ -3,11 +3,11 @@ const Header = ({ course }) => <h2>{course.name}</h2>
 const Part = ({ name, exercises }) => <p>{name} {exercises}</p>
 
 const Total = ({ course }) => {
-  let sum = course.parts.reduce((acc, part) => acc + part.exercises, 0)
+  const total = course.parts.reduce((acc, part) => acc + part.exercises, 0)
 
   return (
     <div>
-      <b>total of {sum} exercises</b>
+      <b>total of {total} exercises</b>
     </div>
   )
 }

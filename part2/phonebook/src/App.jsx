@@ -2,29 +2,33 @@ import { useState } from 'react'
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas' }
+    { name: 'Arto Hellas', phone: '040-1234567' }
   ])
-  const [newName, setNewName] = useState('')
+  const [newPerson, setNewPerson] = useState({
+    name: '',
+    phone: ''
+   })
 
-  const handleNoteChange = (e) => setNewName(e.target.value)
+  const handlePersonChange = (e) => {
+    const { name, value } = e.target
+    setNewPerson(
+      {...newPerson,
+      [name]: value
+  })
+  }
 
   const addNewNote = (e) => {
     e.preventDefault()
 
-    const isInPhonebook = persons.find(person => person.name.toLowerCase() === newName.toLowerCase())
+    const isInPhonebook = persons.find(person => person.name.toLowerCase() === newPerson.name.toLowerCase())
 
     if (isInPhonebook === undefined) {
-      const noteObject = {
-        name: newName,
-      }
-
-      setPersons(persons.concat(noteObject))
-      setNewName('')
+      setPersons(persons.concat(newPerson))
+      setNewPerson({name: '', phone: ''})
       return
     }
 
-    alert(`${newName} is already added to phonebook`)
-
+    alert(`${newPerson.name} is already added to phonebook`)
   }
 
   return (
@@ -33,8 +37,16 @@ const App = () => {
       <form onSubmit={addNewNote}>
         <div>
           name: <input
-            value={newName}
-            onChange={handleNoteChange}
+            name='name'
+            value={newPerson.name}
+            onChange={handlePersonChange}
+          />
+        </div>
+        <div>
+          number: <input
+            name='phone'
+            value={newPerson.phone}
+            onChange={handlePersonChange}
           />
         </div>
         <div>
@@ -43,7 +55,7 @@ const App = () => {
       </form>
       <h2>Numbers</h2>
       {persons.map(person =>
-        <div key={person.name}>{person.name}</div>
+        <div key={person.name}>{person.name} {person.phone}</div>
       )}
     </div>
   )

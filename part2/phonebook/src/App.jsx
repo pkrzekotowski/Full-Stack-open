@@ -10,12 +10,21 @@ const App = () => {
 
   const addNewNote = (e) => {
     e.preventDefault()
-    const noteObject = {
-      name: newName,
+
+    const isInPhonebook = persons.find(person => person.name.toLowerCase() === newName.toLowerCase())
+
+    if (isInPhonebook === undefined) {
+      const noteObject = {
+        name: newName,
+      }
+
+      setPersons(persons.concat(noteObject))
+      setNewName('')
+      return
     }
 
-    setPersons(persons.concat(noteObject))
-    setNewName('')
+    alert(`${newName} is already added to phonebook`)
+
   }
 
   return (

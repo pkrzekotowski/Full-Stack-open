@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import phonebookService from './services/notes'
 
 const Persons = ({ person }) => <div>{person.name} {person.number}</div>
 
@@ -48,9 +48,9 @@ const App = () => {
   const [searchTerm, setSearchTerm] = useState('')
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => setPersons(response.data))
+    phonebookService
+      .getAll()
+      .then(personList => setPersons(personList))
   }, [])
 
   const handlePersonChange = (e) => {
@@ -75,10 +75,10 @@ const App = () => {
         number: newPerson.number,
       }
 
-      axios
-        .post('http://localhost:3001/persons', personObject)
-        .then(response => {
-          setPersons(persons.concat(response.data))
+      phonebookService
+        .create(personObject)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
           setNewPerson({name: '', number: ''})
         })
 

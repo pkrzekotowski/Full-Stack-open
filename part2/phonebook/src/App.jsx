@@ -3,7 +3,7 @@ import axios from 'axios'
 
 const Persons = ({ person }) => <div>{person.name} {person.number}</div>
 
-const PersonForm = ({ onSubmit, onChange, nameText, phoneText, newPerson }) => {
+const PersonForm = ({ onSubmit, onChange, nameText, numberText, newPerson }) => {
   return (
     <form onSubmit={onSubmit}>
       <div>
@@ -15,8 +15,8 @@ const PersonForm = ({ onSubmit, onChange, nameText, phoneText, newPerson }) => {
       </div>
       <div>
         number: <input
-          name={phoneText}
-          value={newPerson.phone}
+          name={numberText}
+          value={newPerson.number}
           onChange={onChange}
         />
       </div>
@@ -43,7 +43,7 @@ const App = () => {
   const [persons, setPersons] = useState([])
   const [newPerson, setNewPerson] = useState({
     name: '',
-    phone: ''
+    number: ''
    })
   const [searchTerm, setSearchTerm] = useState('')
 
@@ -52,8 +52,6 @@ const App = () => {
       .get('http://localhost:3001/persons')
       .then(response => setPersons(response.data))
   }, [])
-
-  console.log(persons)
 
   const handlePersonChange = (e) => {
     const { name, value } = e.target
@@ -74,12 +72,16 @@ const App = () => {
 
       const personObject = {
         name: newPerson.name,
-        phone: newPerson.phone,
-        id: persons.length + 1
+        number: newPerson.number,
       }
 
-      setPersons(persons.concat(personObject))
-      setNewPerson({name: '', phone: ''})
+      axios
+        .post('http://localhost:3001/persons', personObject)
+        .then(response => {
+          setPersons(persons.concat(response.data))
+          setNewPerson({name: '', number: ''})
+        })
+
       return
     }
 
@@ -100,7 +102,7 @@ const App = () => {
         onSubmit={addNewPerson}
         onChange={handlePersonChange}
         nameText='name'
-        phoneText='phone'
+        numberText='number'
         newPerson={newPerson}
       />
       <h2>Numbers</h2>

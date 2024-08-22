@@ -86,12 +86,12 @@ const App = () => {
 
     const isInPhonebook = persons.find(person => person.name.toLowerCase() === newPerson.name.toLowerCase())
 
-    if (isInPhonebook === undefined) {
+    const personObject = {
+      name: newPerson.name,
+      number: newPerson.number,
+    }
 
-      const personObject = {
-        name: newPerson.name,
-        number: newPerson.number,
-      }
+    if (isInPhonebook === undefined) {
 
       phonebookService
         .create(personObject)
@@ -103,7 +103,17 @@ const App = () => {
       return
     }
 
-    alert(`${newPerson.name} is already added to phonebook`)
+    let result = window.confirm
+    (`${newPerson.name} is already added to phonebook, replace the old number with new one?`)
+
+    if (result) {
+      phonebookService
+        .update(isInPhonebook.id, personObject)
+        .then(returnedPerson => {
+          setPersons(persons.map(person => person.id !== returnedPerson.id ? person : returnedPerson))
+          setNewPerson({name: '', number: ''})
+        })
+    }
   }
 
   const filteredPersons = persons.filter(person => person.name.toLocaleLowerCase().includes(searchTerm.toLowerCase()))

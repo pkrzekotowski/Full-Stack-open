@@ -1,29 +1,14 @@
 {
   "persons": [
     {
-      "name": "Arto Hellas",
-      "number": "040-123456",
-      "id": "1"
+      "id": "75ab",
+      "name": "Steve Jobs",
+      "number": "23432423423"
     },
     {
-      "name": "Ada Lovelace",
-      "number": "39-44-5323523",
-      "id": "2"
-    },
-    {
-      "name": "Dan Abramov",
-      "number": "12-43-234345",
-      "id": "3"
-    },
-    {
-      "name": "Mary Poppendieck",
-      "number": "39-23-6423122",
-      "id": "4"
-    },
-    {
-      "id": "d1c7",
-      "name": "Adam Newman",
-      "number": "243423523"
+      "id": "d26d",
+      "name": "Bill Gates",
+      "number": "24235235346"
     }
   ]
 }

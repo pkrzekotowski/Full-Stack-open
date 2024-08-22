@@ -1,7 +1,14 @@
 import { useEffect, useState } from 'react'
 import phonebookService from './services/notes'
 
-const Persons = ({ person }) => <div>{person.name} {person.number}</div>
+const Persons = ({ person, handleDeletion }) => {
+  return (
+    <div>
+      {person.name} {person.number} {''}
+       <button onClick={handleDeletion}>delete</button>
+    </div>
+  )
+}
 
 const PersonForm = ({ onSubmit, onChange, nameText, numberText, newPerson }) => {
   return (
@@ -61,6 +68,17 @@ const App = () => {
   })
   }
 
+  const handleDeletion = (id) => {
+    const personToDelete = persons.find(person => person.id === id)
+    let result = window.confirm(`Delete ${personToDelete.name} ?`)
+
+    if (result) {
+      phonebookService
+        .deletePerson(id)
+        .then(returnedPerson => setPersons(persons.filter(person => returnedPerson.id !== person.id)))
+    }
+  }
+
   const handleSearch = (e) => setSearchTerm(e.target.value)
 
   const addNewPerson = (e) => {
@@ -107,7 +125,11 @@ const App = () => {
       />
       <h2>Numbers</h2>
       {filteredPersons.map(person =>
-        <Persons person={person} key={person.id}/>
+        <Persons
+          person={person}
+          key={person.id}
+          handleDeletion={() => handleDeletion(person.id)}
+        />
       )}
     </div>
   )

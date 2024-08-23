@@ -1,6 +1,18 @@
 import { useEffect, useState } from 'react'
 import phonebookService from './services/notes'
 
+const Notification = ({ notification }) => {
+  if (notification === null) {
+    return null
+  }
+
+  return (
+    <div className='success'>
+      {notification}
+    </div>
+  )
+}
+
 const Persons = ({ person, handleDeletion }) => {
   return (
     <div>
@@ -53,6 +65,7 @@ const App = () => {
     number: ''
    })
   const [searchTerm, setSearchTerm] = useState('')
+  const [notification, setNotification] = useState(null)
 
   useEffect(() => {
     phonebookService
@@ -98,6 +111,11 @@ const App = () => {
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
           setNewPerson({name: '', number: ''})
+          setNotification(`Added ${newPerson.name}`)
+          setTimeout(() => {
+            setNotification(null)
+          }, 5000)
+          setNewPerson({name: '', number: ''})
         })
 
       return
@@ -121,6 +139,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification notification={notification} />
       <Filter
         searchTerm={searchTerm}
         handleSearch={handleSearch}

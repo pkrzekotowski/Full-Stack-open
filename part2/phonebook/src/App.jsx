@@ -94,6 +94,14 @@ const App = () => {
             setNotification({message: null, class: null})
           }, 5000)
         })
+        .catch(error => {
+          console.log(error.message)
+          setNotification({message: `${personToDelete.name} has already been deleted`, class: 'error'})
+          setTimeout(() => {
+            setNotification({message: null, class: null})
+          }, 5000)
+          setPersons(persons.filter(person => person.id !== id))
+        })
     }
   }
 

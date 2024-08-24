@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react'
 import phonebookService from './services/notes'
 
 const Notification = ({ notification }) => {
-  if (notification === null) {
+  if (notification.message === null) {
     return null
   }
 
   return (
-    <div className='success'>
-      {notification}
+    <div className={notification.class}>
+      {notification.message}
     </div>
   )
 }
@@ -60,12 +60,9 @@ const Filter = ({ searchTerm, handleSearch }) => {
 
 const App = () => {
   const [persons, setPersons] = useState([])
-  const [newPerson, setNewPerson] = useState({
-    name: '',
-    number: ''
-   })
+  const [newPerson, setNewPerson] = useState({name: '', number: ''})
   const [searchTerm, setSearchTerm] = useState('')
-  const [notification, setNotification] = useState(null)
+  const [notification, setNotification] = useState({message: null, class: null})
 
   useEffect(() => {
     phonebookService
@@ -88,7 +85,15 @@ const App = () => {
     if (result) {
       phonebookService
         .deletePerson(id)
-        .then(returnedPerson => setPersons(persons.filter(person => returnedPerson.id !== person.id)))
+        .then(returnedPerson => {
+          setPersons(persons.filter(person => person.id !== returnedPerson.id))
+          setNotification(
+            {message: `${personToDelete.name} deleted from the phonebook`, class: 'error'}
+          )
+          setTimeout(() => {
+            setNotification({message: null, class: null})
+          }, 5000)
+        })
     }
   }
 
@@ -111,9 +116,9 @@ const App = () => {
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
           setNewPerson({name: '', number: ''})
-          setNotification(`Added ${newPerson.name}`)
+          setNotification({message: `Added ${returnedPerson.name}`, class: 'success'})
           setTimeout(() => {
-            setNotification(null)
+            setNotification({message: null, class: null})
           }, 5000)
           setNewPerson({name: '', number: ''})
         })
@@ -129,7 +134,23 @@ const App = () => {
         .update(isInPhonebook.id, personObject)
         .then(returnedPerson => {
           setPersons(persons.map(person => person.id !== returnedPerson.id ? person : returnedPerson))
+          setNotification({message: `Changed number for ${personObject.name}`, class: 'success'})
+          setTimeout(() => {
+            setNotification({message: null, class: null})
+          }, 5000)
           setNewPerson({name: '', number: ''})
+        })
+        .catch(error => {
+          console.log(error.message)
+          setNotification(
+            {message: `${personObject.name} was already deleted from the phonebook`, class: 'error'}
+          )
+          setTimeout(() => {
+            setNotification({message: null, class: null})
+          }, 5000)
+
+          setNewPerson({name: '', number: ''})
+          setPersons(persons.filter(person => person.id !== isInPhonebook.id))
         })
     }
   }
